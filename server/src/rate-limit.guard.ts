@@ -26,7 +26,7 @@ export class RateLimitGuard implements CanActivate {
       await this.redis.expire(key, 1);
     }
 
-    if (count > 2) {
+    if (count > 50) {
       throw new HttpException('Too Many Requests', HttpStatus.TOO_MANY_REQUESTS);
     }
 
