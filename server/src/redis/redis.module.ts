@@ -9,7 +9,9 @@ export const REDIS_CLIENT = 'REDIS_CLIENT';
     {
       provide: REDIS_CLIENT,
       useFactory: async () => {
-        const client = createClient({ url: 'redis://localhost:6379' });
+        const redisHost = process.env.REDIS_HOST || 'localhost';
+        const redisPort = process.env.REDIS_PORT || 6379;
+        const client = createClient({ url: `redis://${redisHost}:${redisPort}` });
         await client.connect();
         return client;
       },
