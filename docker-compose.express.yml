@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: devit-redis-express
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_express:/data
+    networks:
+      - devit-network-express
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  server:
+    build:
+      context: ./server-express
+      dockerfile: Dockerfile
+    container_name: devit-server-express
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - NODE_ENV=development
+      - PORT=3000
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - devit-network-express
+    volumes:
+      - ./server-express/src:/app/src
+    command: npm run start:dev
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: devit-client-express
+    ports:
+      - "5173:5173"
+    environment:
+      - API_URL=http://server:3000
+    networks:
+      - devit-network-express
+    volumes:
+      - ./client/src:/app/src
+    command: npm run dev -- --host
+
+volumes:
+  redis_data_express:
+
+networks:
+  devit-network-express:
+    driver: bridge
