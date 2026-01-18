@@ -3,11 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RedisModule } from './redis/redis.module';
 import { ApiModule } from './api/api.module';
-import { ApiController } from './api/api.controller';
+import { ApiService } from './api/api.service';
 
 @Module({
   imports: [RedisModule, ApiModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ApiService],
 })
 export class AppModule {}
