@@ -9,6 +9,6 @@ export class ApiController {
   @Get('api')
   @UseGuards(RateLimitGuard)
   async handle(@Query('index') index: string) {
-    this.apiService.processIndex(index);
+    return this.apiService.processIndex(index);
   }
 }
