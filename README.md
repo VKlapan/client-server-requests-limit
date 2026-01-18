@@ -1,3 +1,52 @@
+### Usage
+
+## Installation
+
+1. Clone the repository
+2. Installation:
+
+CLIENT:
+[CLIENT](./client/README.md#installation)
+
+SERVER:
+[NESTJS SERVER](./server/README.md#installation)
+or
+[EXPRESS SERVER](./server-express/README.md#installation)
+
+## Local Development
+1. Run up Redis server
+
+```bash
+docker run -p 6379:6379 redis
+```
+
+2. Run Client:
+[CLIENT](./client/README.md#local-development)
+
+3. Run Server:
+[NESTJS SERVER](./server/README.md#local-development)
+or
+[EXPRESS SERVER](./server-express/README.md#local-development)
+
+4. Use Exposed Services:
+http://localhost:5173 => client
+http://localhost:3000 => server
+
+
+## Docker version
+All Docker-related commands are defined in the `Makefile`.
+To see all:
+```bash
+make
+```
+
+
+
+
+
+
+### The Task
+
 Implement client-server data fetch logic by following the next steps:
 
 1. Display an input (required, type number, from 0 to 100) and the "Start" button. Clicking the "Start" button you will disable it and start sending 1000 asynchronous HTTP requests to a server's "/api" endpoint in the following way:

@@ -1,39 +1,18 @@
-# Server Express
-
-Express-based REST API server with Redis rate limiting.
-
-## Features
-
-- Express.js framework
-- Redis-based rate limiting (50 requests per second)
-- Random response delay (1-1000ms)
-- TypeScript support
-- Docker support
-
+### EXPRESS SERVER SIDE
 ## Installation
-
 ```bash
 npm install
 ```
 
-## Development
+## Local Development
 
 ```bash
 npm run start:dev
 ```
 
-## Production
-
+## Run tests
 ```bash
-npm run build
-npm run start:prod
-```
-
-## Testing
-
-```bash
-npm test
-npm run test:e2e
+npm run test
 ```
 
 ## Environment Variables
