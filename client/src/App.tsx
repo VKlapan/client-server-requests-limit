@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { runWorkers } from './utils/workers';
 
 const TOTAL_REQUESTS = 1000;
 
@@ -11,72 +12,15 @@ export default function App() {
     setRunning(true);
     setResults([]);
 
-    const queue: number[] = Array.from(
-      { length: TOTAL_REQUESTS },
-      (_, i) => i + 1,
-    );
+    await runWorkers({
+      total: TOTAL_REQUESTS,
+      concurrency: limit,
+      onResult: (index) => {
+        setResults((prev) => [...prev, index]);
+      },
+      onError: console.error,
+    });
 
-    let tokens = limit;
-    const waiters: Array<() => void> = [];
-
-    const takeToken = async () => {
-      if (tokens > 0) {
-        tokens--;
-        return;
-      }
-
-      await new Promise<void>((resolve) => {
-        waiters.push(resolve);
-      });
-    };
-
-    const refill = setInterval(() => {
-      const canAdd = limit - tokens;
-      if (canAdd <= 0) return;
-
-      tokens += canAdd;
-
-      while (tokens > 0 && waiters.length > 0) {
-        tokens--;
-        const resolve = waiters.shift();
-        if (resolve) resolve();
-      }
-    }, 1000);
-
-    const worker = async () => {
-      while (queue.length > 0) {
-        await takeToken();
-
-        const index = queue.shift();
-        if (index === undefined) return;
-
-        try {
-          const res = await fetch(`/api?index=${index}`);
-          if (!res.ok) {
-
-            if (res.status === 429) {
-              await new Promise(r => setTimeout(r, 200));
-              queue.unshift(index);
-              continue;
-            }
-            continue;
-          }
-
-          const data: { index: number } = await res.json();
-          console.log(data);
-
-          setResults((prev) => [...prev, data.index]);
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    };
-
-    await Promise.all(
-      Array.from({ length: limit }, () => worker()),
-    );
-
-    clearInterval(refill);
     setRunning(false);
   };
 
